@@ -1,5 +1,3 @@
-
-
 import streamlit as st
 import pandas as pd
 from pymongo import MongoClient
@@ -40,8 +38,11 @@ else:
         elif option == 'Delete Employee':
             name = st.text_input('Enter Name to Delete:')
             if st.button('Delete'):
-                collection.delete_one({'Name': name})
-                st.success('Employee deleted successfully!')
+                delete_result = collection.delete_one({'Name': name})
+                if delete_result.deleted_count > 0:
+                    st.success('Employee deleted successfully!')
+                else:
+                    st.warning('No matching employee found.')
 
         elif option == 'View Employees':
             employees = list(collection.find())
@@ -57,3 +58,4 @@ else:
         st.error(f"Connection failure: {err}. Please check your MongoDB server.")
     except Exception as e:
         st.error(f"An error occurred: {e}")
+
